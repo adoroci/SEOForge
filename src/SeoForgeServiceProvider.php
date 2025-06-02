@@ -5,8 +5,6 @@ namespace ProbeForge\SEOForge;
 use Illuminate\Support\ServiceProvider;
 use ProbeForge\SEOForge\Console\Commands\SeoAudit;
 use ProbeForge\SEOForge\Console\Commands\SeoFixer;
-use ProbeForge\SEOForge\Console\Commands\SeoAuditDynamicContent;
-use ProbeForge\SEOForge\Console\Commands\SeoReport;
 
 class SeoForgeServiceProvider extends ServiceProvider
 {
@@ -41,8 +39,6 @@ class SeoForgeServiceProvider extends ServiceProvider
             $this->commands([
                 SeoAudit::class,
                 SeoFixer::class,
-                SeoAuditDynamicContent::class,
-                SeoReport::class,
             ]);
         }
     }

@@ -2,6 +2,28 @@
 
 All notable changes to `seoforge` will be documented in this file.
 
+## [1.1] - 2025-06-02
+
+### Fixed
+- **Cross-platform file discovery**: Replaced `File::glob()` with `RecursiveDirectoryIterator` for better Windows compatibility
+- **Single file targeting**: Commands now support both directory and individual file paths
+- **File scanning accuracy**: Improved recursive blade file detection across all subdirectories
+
+### Improved
+- **Error handling**: Better validation and user-friendly error messages
+- **Backup functionality**: Reliable timestamped backup creation in `storage/app/seo-backups`
+- **Progress reporting**: Accurate file count display during processing
+- **Command reliability**: Enhanced stability for both audit and fix operations
+
+### Tested
+- ✅ All compliance levels (A, AA, AAA) working correctly
+- ✅ Automated fixes for viewport, language, canonical, robots meta, favicon, preconnect, apple-touch-icon, missing alt attributes
+- ✅ JSON output format for CI/CD integration
+- ✅ Backup creation and restoration capabilities
+- ✅ Edge case handling and error scenarios
+- ✅ Multi-file and single-file processing
+- ✅ Windows PowerShell compatibility
+
 ## [1.0] - 2025-06-02
 
 ### Added

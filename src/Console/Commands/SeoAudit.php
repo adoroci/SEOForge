@@ -138,7 +138,27 @@ class SeoAudit extends Command
      */
     protected function getBladeFiles(): array
     {
-        return File::glob($this->scanPath . '/**/*.blade.php');
+        $files = [];
+        
+        // Check if the path is a specific file
+        if (is_file($this->scanPath) && str_ends_with($this->scanPath, '.blade.php')) {
+            return [$this->scanPath];
+        }
+        
+        // If it's a directory, scan recursively
+        if (is_dir($this->scanPath)) {
+            $iterator = new \RecursiveIteratorIterator(
+                new \RecursiveDirectoryIterator($this->scanPath, \RecursiveDirectoryIterator::SKIP_DOTS)
+            );
+
+            foreach ($iterator as $file) {
+                if ($file->isFile() && str_ends_with($file->getFilename(), '.blade.php')) {
+                    $files[] = $file->getPathname();
+                }
+            }
+        }
+
+        return $files;
     }
     
     /**

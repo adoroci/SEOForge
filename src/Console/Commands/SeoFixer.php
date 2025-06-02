@@ -167,7 +167,27 @@ class SeoFixer extends Command
      */
     protected function getBladeFiles(): array
     {
-        return File::glob($this->fixPath . '/**/*.blade.php');
+        $files = [];
+        
+        // Check if the path is a specific file
+        if (is_file($this->fixPath) && str_ends_with($this->fixPath, '.blade.php')) {
+            return [$this->fixPath];
+        }
+        
+        // If it's a directory, scan recursively
+        if (is_dir($this->fixPath)) {
+            $iterator = new \RecursiveIteratorIterator(
+                new \RecursiveDirectoryIterator($this->fixPath, \RecursiveDirectoryIterator::SKIP_DOTS)
+            );
+
+            foreach ($iterator as $file) {
+                if ($file->isFile() && str_ends_with($file->getFilename(), '.blade.php')) {
+                    $files[] = $file->getPathname();
+                }
+            }
+        }
+
+        return $files;
     }
     
     /**

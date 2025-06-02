@@ -1,258 +1,91 @@
-# SEOForge
+# SEOForge (Alpha)
 
-[![Latest Stable Version](https://poser.pugx.org/probeforge/seoforge/v/stable)](https://packagist.org/packages/probeforge/seoforge)
-[![Total Downloads](https://poser.pugx.org/probeforge/seoforge/downloads)](https://packagist.org/packages/probeforge/seoforge)
+[![Latest Version](https://poser.pugx.org/probeforge/seoforge/v/stable)](https://packagist.org/packages/probeforge/seoforge)
 [![License](https://poser.pugx.org/probeforge/seoforge/license)](https://packagist.org/packages/probeforge/seoforge)
 
-A comprehensive SEO audit and automated fixing tool for Laravel 12 applications. Analyze and optimize your Blade templates for search engine compliance with A/AA/AAA standards.
+⚠️ **Alpha Version Warning**: This is an early development tool with limitations. It's not production-ready.
 
-## ✨ Features
+A basic SEO troubleshooting tool for Laravel 12 Blade templates. Scans your templates for missing SEO elements and can fix some basic structural issues.
 
-### 🔍 **Comprehensive SEO Auditing**
-- **Multi-level compliance**: A, AA, AAA standards
-- **Blade template analysis**: Deep inspection of Laravel templates
-- **Dynamic content detection**: Identifies unfilled placeholders
-- **Detailed reporting**: HTML reports with actionable insights
+## What This Tool Actually Does
 
-### 🛠️ **Automated Fixing**
-- **One-command fixes**: Automatically resolve common SEO issues
-- **Backup creation**: Safe modifications with rollback options
-- **Selective fixing**: Target specific issues or run comprehensive fixes
-- **Batch processing**: Fix multiple files simultaneously
+**✅ What It Can Do:**
+- Scan Blade templates for missing SEO elements (meta tags, Open Graph, etc.)
+- Generate reports showing what's missing
+- Add basic structural elements like viewport meta tag, canonical URLs, favicon links
+- Create file backups before making changes
+- Output results in table or JSON format
 
-### 📊 **Professional Reporting**
-- **HTML reports**: Beautiful, shareable audit reports
-- **JSON output**: Integrate with CI/CD pipelines
-- **Progress tracking**: Monitor SEO improvements over time
-- **Issue categorization**: Critical, moderate, and minor issues
+**❌ What It Cannot Do:**
+- Write meta descriptions, titles, or any content for you
+- Guarantee SEO success or rankings
+- Fix semantic or content-related SEO issues
+- Replace proper SEO strategy and planning
+- Handle complex template logic or dynamic content perfectly
 
-### 🎯 **SEO Elements Covered**
+**🎯 Realistic Use Case:**
+This is a development helper to quickly identify missing SEO elements in your templates. You still need to write the actual SEO content yourself.
 
-#### **Level A (Critical)**
-- ✅ Title tags
-- ✅ Meta descriptions
-- ✅ Canonical URLs
-- ✅ Viewport meta tags
-- ✅ HTML lang attributes
-
-#### **Level AA (Important)**
-- ✅ Meta robots directives
-- ✅ Open Graph tags (title, description, image, type)
-- ✅ Twitter Card tags
-- ✅ Image alt attributes
-- ✅ Heading hierarchy (H1-H6)
-
-#### **Level AAA (Advanced)**
-- ✅ Schema.org JSON-LD structured data
-- ✅ Meta keywords
-- ✅ DNS prefetch/preconnect hints
-- ✅ Favicon and Apple touch icons
-- ✅ Hreflang tags for internationalization
-- ✅ Image dimensions attributes
-
-## 📦 Installation
-
-Install via Composer:
+## Installation
 
 ```bash
-composer require probeforge/seoforge
+composer require probeforge/seoforge:@dev
 ```
 
-The package will automatically register its service provider in Laravel 12.
+## Quick Usage
 
-### Publish Configuration (Optional)
-
+### Check what's missing:
 ```bash
-php artisan vendor:publish --provider="ProbeForge\SEOForge\SeoForgeServiceProvider" --tag="config"
-```
-
-This publishes the configuration file to `config/seo-forge.php`.
-
-## 🚀 Quick Start
-
-### Basic SEO Audit
-
-Run a comprehensive SEO audit on your Blade templates:
-
-```bash
-# Basic audit (AAA level)
 php artisan seo:audit
-
-# Specific compliance level
-php artisan seo:audit --level=A
-
-# Audit specific directory
-php artisan seo:audit --path=resources/views/pages
-
-# JSON output for CI/CD
-php artisan seo:audit --level=AA --json
 ```
 
-### Automated Fixing
-
-Fix common SEO issues automatically:
-
+### Fix basic structural issues:
 ```bash
-# Fix all issues with backup
-php artisan seo:fix --backup
-
-# Fix specific issues
-php artisan seo:fix --issues=viewport,canonical,meta_robots
-
-# Fix specific directory
-php artisan seo:fix --path=resources/views/pages --backup
+php artisan seo:fix --issues=viewport,canonical --backup
 ```
 
-### Generate Reports
-
-Create comprehensive SEO reports:
-
+### Get JSON output for scripts:
 ```bash
-# Generate HTML report
-php artisan seo:report --output=public/seo-report.html
-
-# Include dynamic content audit
-php artisan seo:report --check-dynamic --output=reports/full-audit.html
-
-# Specific compliance level
-php artisan seo:report --level=AA --output=public/aa-compliance.html
+php artisan seo:audit --json
 ```
 
-## 📋 Available Commands
+## What Gets Checked
+
+**Level A (Basic):**
+- Title tags, meta descriptions, canonical URLs, viewport, lang attribute
+
+**Level AA (Social):**
+- Open Graph tags, Twitter cards, image alt attributes, heading hierarchy
+
+**Level AAA (Advanced):**
+- Schema markup, meta keywords, favicons, preconnect hints, hreflang
+
+## What Can Be Auto-Fixed
+
+Only basic structural elements:
+- `viewport` - Adds viewport meta tag
+- `canonical` - Adds canonical URL link
+- `favicon` - Adds favicon link
+- `language` - Adds lang attribute to html tag
+- `meta_robots` - Adds robots meta tag
+- `preconnect` - Adds preconnect/DNS prefetch
+- `apple_touch_icon` - Adds Apple touch icon
+
+**Important**: The tool cannot create content like meta descriptions or titles - that's your job!
+
+## Commands
 
 ### `seo:audit`
-
-Audit Blade templates for SEO compliance issues.
-
 ```bash
-php artisan seo:audit [options]
+php artisan seo:audit [--path=] [--level=A|AA|AAA] [--json]
 ```
-
-**Options:**
-- `--path=` : Path to scan (default: `resources/views`)
-- `--level=` : Compliance level A/AA/AAA (default: `AAA`)
-- `--json` : Output results as JSON
-- `--fix` : Attempt to fix issues during audit
 
 ### `seo:fix`
-
-Automatically fix common SEO issues in Blade templates.
-
 ```bash
-php artisan seo:fix [options]
+php artisan seo:fix [--path=] [--backup] [--issues=viewport,canonical]
 ```
 
-**Options:**
-- `--path=` : Path to fix (default: `resources/views`)
-- `--backup` : Create backups before modifying files
-- `--issues=` : Specific issues to fix (comma-separated)
-
-**Fixable Issues:**
-- `viewport` : Add viewport meta tag
-- `language` : Add HTML lang attribute
-- `canonical` : Add canonical URLs
-- `meta_robots` : Add robots meta tag
-- `favicon` : Add favicon link
-- `preconnect` : Add preconnect/DNS prefetch
-- `apple_touch_icon` : Add Apple touch icon
-- `missing_alt` : Add alt text to images
-
-### `seo:audit-dynamic`
-
-Audit dynamic content placeholders in templates.
-
-```bash
-php artisan seo:audit-dynamic [options]
-```
-
-**Options:**
-- `--path=` : Path to scan (default: `resources/views`)
-- `--config=` : Config file to check (default: `seo`)
-- `--json` : Output as JSON
-
-### `seo:report`
-
-Generate comprehensive SEO audit reports.
-
-```bash
-php artisan seo:report [options]
-```
-
-**Options:**
-- `--path=` : Path to scan (default: `resources/views`)
-- `--level=` : Compliance level (default: `AAA`)
-- `--output=` : Report output file (default: `report.html`)
-- `--check-dynamic` : Include dynamic content audit
-
-## ⚙️ Configuration
-
-### SEO Configuration
-
-Create a `config/seo.php` file to define your SEO settings:
-
-```php
-<?php
-
-return [
-    'pages' => [
-        'home' => [
-            'title' => 'Your App - Welcome',
-            'description' => 'Welcome to our amazing application.',
-            'keywords' => 'app, laravel, awesome',
-        ],
-        'about' => [
-            'title' => 'About Us - Your App',
-            'description' => 'Learn more about our company.',
-            'keywords' => 'about, company, team',
-        ],
-    ],
-    'default' => [
-        'title' => 'Your App',
-        'description' => 'Default description',
-        'keywords' => 'default, keywords',
-    ],
-    'robots' => [
-        'default' => 'index, follow',
-        'admin' => 'noindex, nofollow',
-    ],
-];
-```
-
-### Package Configuration
-
-The package configuration file (`config/seo-forge.php`) allows you to customize:
-
-```php
-<?php
-
-return [
-    'paths' => [
-        'default_scan_path' => 'resources/views',
-        'exclude_patterns' => [
-            'resources/views/vendor/**',
-            'resources/views/admin/**',
-        ],
-    ],
-    'compliance' => [
-        'default_level' => 'AAA',
-        'strict_mode' => false,
-    ],
-    'reports' => [
-        'default_output' => 'storage/app/seo-reports',
-        'include_timestamps' => true,
-    ],
-    'fixes' => [
-        'create_backups' => true,
-        'backup_path' => 'storage/app/seo-backups',
-    ],
-];
-```
-
-## 🎨 Blade Template Integration
-
-### Basic SEO Setup
-
-Set up your main layout (`resources/views/layouts/app.blade.php`):
+## Example Blade Setup
 
 ```blade
 <!DOCTYPE html>
@@ -260,39 +93,18 @@ Set up your main layout (`resources/views/layouts/app.blade.php`):
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
     
-    <title>@yield('title', config('seo.default.title'))</title>
-    <meta name="description" content="@yield('meta_description', config('seo.default.description'))">
-    <meta name="keywords" content="@yield('meta_keywords', config('seo.default.keywords'))">
+    <title>@yield('title', 'Default Title')</title>
+    <meta name="description" content="@yield('description', 'Default description')">
     
-    <!-- SEO Elements -->
-    <link rel="canonical" href="@yield('canonical_url', request()->url())">
-    <meta name="robots" content="@yield('meta_robots', config('seo.robots.default'))">
+    <link rel="canonical" href="@yield('canonical', request()->url())">
+    <meta name="robots" content="@yield('robots', 'index,follow')">
     
     <!-- Open Graph -->
-    <meta property="og:type" content="@yield('og_type', 'website')">
-    <meta property="og:url" content="@yield('og_url', request()->url())">
-    <meta property="og:title" content="@yield('og_title', config('seo.default.title'))">
-    <meta property="og:description" content="@yield('og_description', config('seo.default.description'))">
-    <meta property="og:image" content="@yield('og_image', asset('images/og-default.png'))">
+    <meta property="og:title" content="@yield('og_title', 'Default Title')">
+    <meta property="og:description" content="@yield('og_description', 'Default description')">
     
-    <!-- Twitter Cards -->
-    <meta name="twitter:card" content="@yield('twitter_card', 'summary_large_image')">
-    <meta name="twitter:title" content="@yield('twitter_title', config('seo.default.title'))">
-    <meta name="twitter:description" content="@yield('twitter_description', config('seo.default.description'))">
-    <meta name="twitter:image" content="@yield('twitter_image', asset('images/og-default.png'))">
-    
-    <!-- Favicons -->
-    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
-    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('apple-touch-icon.png') }}">
-    
-    <!-- Resource Hints -->
-    <link rel="preconnect" href="{{ config('app.url') }}">
-    <link rel="dns-prefetch" href="{{ config('app.url') }}">
-    
-    <!-- Schema.org -->
-    @yield('schema')
+    <link rel="icon" href="{{ asset('favicon.ico') }}">
 </head>
 <body>
     @yield('content')
@@ -300,147 +112,57 @@ Set up your main layout (`resources/views/layouts/app.blade.php`):
 </html>
 ```
 
-### Page-Specific SEO
-
-In your page templates, define SEO elements:
-
+Then in your pages:
 ```blade
 @extends('layouts.app')
 
-@section('title', 'About Us - ' . config('app.name'))
-@section('meta_description', 'Learn about our company, mission, and team.')
-@section('meta_keywords', 'about, company, team, mission')
-@section('canonical_url', route('about'))
-
+@section('title', 'About Us - My Site')
+@section('description', 'Learn about our company and mission.')
 @section('og_title', 'About Our Company')
-@section('og_description', 'Discover our story and meet our amazing team.')
-@section('og_image', asset('images/about-og.png'))
-
-@section('schema')
-<script type="application/ld+json">
-{
-    "@context": "https://schema.org",
-    "@type": "AboutPage",
-    "name": "About Us",
-    "description": "Learn about our company, mission, and team."
-}
-</script>
-@endsection
 
 @section('content')
-    <!-- Your page content -->
+    <h1>About Us</h1>
+    <p>Content goes here...</p>
 @endsection
 ```
 
-## 📊 Understanding Audit Results
+## Known Issues & Limitations
 
-### Compliance Levels
+- Table formatting can be messy in some terminals
+- Regex detection may have false positives/negatives
+- Cannot handle complex Blade logic
+- Windows path handling has some edge cases
+- Does not validate content quality, only presence
+- Cannot generate meaningful content
 
-- **Level A**: Critical SEO elements required for basic search engine indexing
-- **Level AA**: Important elements that improve search visibility and social sharing
-- **Level AAA**: Advanced optimizations for maximum SEO performance
+## Configuration
 
-### Issue Types
-
-- **`missing_element`**: Required SEO element is not present
-- **`invalid_format`**: Element exists but has incorrect format
-- **`empty_content`**: Element exists but has no content
-- **`dynamic_placeholder`**: Placeholder not filled with actual content
-
-### Fixable Status
-
-- **Fixable**: Can be automatically resolved with `seo:fix` command
-- **Manual**: Requires manual intervention and content creation
-
-## 🤝 Integration Examples
-
-### CI/CD Pipeline
-
-Add SEO auditing to your GitHub Actions:
-
-```yaml
-name: SEO Audit
-on: [push, pull_request]
-
-jobs:
-  seo-audit:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: 8.4
-      - name: Install dependencies
-        run: composer install
-      - name: Run SEO Audit
-        run: php artisan seo:audit --level=A --json > seo-audit.json
-      - name: Upload audit results
-        uses: actions/upload-artifact@v3
-        with:
-          name: seo-audit
-          path: seo-audit.json
-```
-
-### Pre-commit Hook
-
-Add to your `.git/hooks/pre-commit`:
-
+Optional - publish config:
 ```bash
-#!/bin/sh
-php artisan seo:audit --level=A --json | jq '.[] | select(.issues | length > 0)' && exit 1
-echo "SEO audit passed"
+php artisan vendor:publish --provider="ProbeForge\SEOForge\SeoForgeServiceProvider"
 ```
 
-## 🧪 Testing
+## Is This For Me?
 
-Run the package tests:
+**Yes, if you want to:**
+- Quickly scan templates for missing SEO elements
+- Get a basic SEO checklist for your Laravel app
+- Add basic structural SEO elements automatically
 
-```bash
-composer test
-```
+**No, if you expect:**
+- AI-generated meta descriptions or titles
+- Complete SEO optimization
+- Production-ready SEO automation
+- Marketing or content strategy advice
 
-Run with coverage:
+## Contributing
 
-```bash
-composer test:coverage
-```
+This is alpha software. Contributions welcome, but expect breaking changes.
 
-## 🤝 Contributing
+## License
 
-We welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for details.
-
-### Development Setup
-
-1. Clone the repository
-2. Install dependencies: `composer install`
-3. Run tests: `composer test`
-4. Check code style: `composer cs:check`
-
-## 📝 Changelog
-
-Please see [CHANGELOG.md](CHANGELOG.md) for more information on what has changed recently.
-
-## 🔒 Security
-
-If you discover any security-related issues, please email hi@probeforge.com instead of using the issue tracker.
-
-## 📄 License
-
-The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
-
-## 🙏 Credits
-
-- [ProbeForge Team](https://github.com/probeforge)
-- [All Contributors](../../contributors)
-
-## 🔗 Links
-
-- [Packagist](https://packagist.org/packages/probeforge/laravel-seo-audit)
-- [GitHub](https://github.com/probeforge/laravel-seo-audit)
-- [Documentation](https://docs.probeforge.com/laravel-seo-audit)
-- [ProbeForge Tools](https://probeforge.com)
+MIT License. See [LICENSE.md](LICENSE.md).
 
 ---
 
-Made with ❤️ by Adnan Doroci [ProbeForge](https://probeforge.com) 
+**Bottom Line**: This tool finds missing SEO elements and adds basic tags. You still need to write the actual SEO content yourself. It's a starting point, not a complete solution. 

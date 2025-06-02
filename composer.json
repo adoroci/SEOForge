@@ -1,18 +1,15 @@
 {
     "name": "probeforge/seoforge",
-    "description": "Comprehensive SEO audit and automated fixing tool for Laravel 12 Blade templates. Analyze and optimize your application's SEO compliance with A/AA/AAA standards.",
+    "description": "Early-stage SEO troubleshooting tool for Laravel 12 Blade templates. Detects missing SEO elements and can fix basic structural issues - content still needs manual work.",
     "keywords": [
         "laravel",
         "seo",
         "audit",
-        "optimization",
+        "troubleshooting",
         "blade",
         "templates",
-        "meta-tags",
-        "open-graph",
-        "twitter-cards",
-        "schema-org",
-        "structured-data"
+        "alpha",
+        "development"
     ],
     "type": "library",
     "license": "MIT",
@@ -50,8 +47,8 @@
             ]
         }
     },
-    "minimum-stability": "stable",
-    "prefer-stable": true,
+    "minimum-stability": "dev",
+    "prefer-stable": false,
     "config": {
         "sort-packages": true,
         "allow-plugins": {

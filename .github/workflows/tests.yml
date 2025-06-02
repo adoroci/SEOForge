@@ -1,3 +1,6 @@
+# SEOForge Alpha - Test Workflow
+# Note: This is an alpha package under development
+
 name: Tests
 
 on:

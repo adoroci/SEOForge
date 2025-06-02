@@ -24,7 +24,7 @@ class SeoFixer extends Command
      *
      * @var string
      */
-    protected $description = 'Fix common SEO issues in blade templates';
+    protected $description = '🛠️ Add basic SEO tags to templates - content creation not included (alpha)';
 
     /**
      * Known fixes we can apply
@@ -33,34 +33,50 @@ class SeoFixer extends Command
         'viewport' => [
             'pattern' => '/<head[^>]*>/',
             'replacement' => "<head>\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">",
+            'description' => '📱 Adds responsive viewport meta tag',
+            'priority' => 'high'
         ],
         'language' => [
             'pattern' => '/<html[^>]*>/',
             'replacement' => '<html lang="en" data-bs-theme="dark">',
+            'description' => '🌐 Sets HTML language attribute',
+            'priority' => 'high'
         ],
         'meta_robots' => [
             'pattern' => '/<head[^>]*>/',
             'replacement' => "<head>\n    <meta name=\"robots\" content=\"index, follow\">",
+            'description' => '🤖 Adds search engine robots directive',
+            'priority' => 'medium'
         ],
         'canonical' => [
             'pattern' => '/<head[^>]*>/',
             'replacement' => "<head>\n    <link rel=\"canonical\" href=\"{{ request()->url() }}\">",
+            'description' => '🔗 Adds canonical URL for duplicate content prevention',
+            'priority' => 'high'
         ],
         'favicon' => [
             'pattern' => '/<head[^>]*>/',
             'replacement' => "<head>\n    <link rel=\"icon\" type=\"image/x-icon\" href=\"{{ asset('favicon.ico') }}\">",
+            'description' => '⭐ Adds favicon link',
+            'priority' => 'low'
         ],
         'preconnect' => [
             'pattern' => '/<head[^>]*>/',
             'replacement' => "<head>\n    <link rel=\"preconnect\" href=\"{{ config('app.url') }}\">\n    <link rel=\"dns-prefetch\" href=\"{{ config('app.url') }}\">",
+            'description' => '🚀 Adds DNS prefetch and preconnect hints',
+            'priority' => 'medium'
         ],
         'apple_touch_icon' => [
             'pattern' => '/<head[^>]*>/',
             'replacement' => "<head>\n    <link rel=\"apple-touch-icon\" sizes=\"180x180\" href=\"{{ asset('apple-touch-icon.png') }}\">",
+            'description' => '🍎 Adds Apple touch icon',
+            'priority' => 'low'
         ],
         'missing_alt' => [
             'pattern' => '/<img([^>]*)(?!alt=)([^>]*)>/',
             'replacement' => '<img$1 alt="Image"$2>',
+            'description' => '🖼️ Adds alt attributes to images',
+            'priority' => 'high'
         ],
     ];
 
@@ -88,8 +104,11 @@ class SeoFixer extends Command
         $this->createBackups = $this->option('backup');
         $this->issuesToFix = $this->option('issues');
         
+        // Show welcome banner
+        $this->showWelcomeBanner();
+        
         if (!File::exists($this->fixPath)) {
-            $this->error("Path not found: {$this->fixPath}");
+            $this->error("❌ Path not found: {$this->fixPath}");
             return 1;
         }
 
@@ -101,55 +120,110 @@ class SeoFixer extends Command
         // Validate the issues to fix
         foreach ($this->issuesToFix as $issue) {
             if (!array_key_exists($issue, $this->fixableIssues)) {
-                $this->error("Unknown issue: {$issue}");
+                $this->error("❌ Unknown issue: <fg=yellow>{$issue}</>");
                 return 1;
             }
         }
 
-        $this->info("Starting SEO fixes...");
+        $this->info("🛠️ Starting SEO fixes...");
+        $this->line("<fg=gray>📂 Target path: {$this->fixPath}</>");
+        
+        if ($this->createBackups) {
+            $this->line("<fg=green>💾 Backup mode enabled - your files are safe!</>");
+        } else {
+            $this->warn("⚠️ No backup mode - changes will be made directly to files");
+        }
+        
         $this->fixFiles();
         
         return 0;
     }
+
+    /**
+     * Show welcome banner
+     */
+    protected function showWelcomeBanner(): void
+    {
+        $this->line('');
+        $this->line('<fg=green>╔══════════════════════════════════════════════╗</>');
+        $this->line('<fg=green>║</> <fg=white;options=bold>🛠️ SEOForge - Basic SEO Fixer (Alpha)</> <fg=green>║</>');
+        $this->line('<fg=green>║</> <fg=gray>Adds basic tags only - write content yourself</> <fg=green>║</>');
+        $this->line('<fg=green>╚══════════════════════════════════════════════╝</>');
+        $this->line('');
+    }
     
     /**
-     * Ask which issues to fix
+     * Ask which issues to fix with enhanced interface
      */
     protected function askWhichIssuesToFix(): array
     {
-        $choices = array_keys($this->fixableIssues);
+        $this->line('<fg=white;options=bold>🔧 Available SEO Fixes:</>');
+        $this->line('');
         
+        $choices = [];
+        foreach ($this->fixableIssues as $key => $fix) {
+            $priority = $this->formatPriority($fix['priority']);
+            $this->line("  {$priority} <fg=cyan>{$key}</> - {$fix['description']}");
+            $choices[] = $key;
+        }
+        
+        $this->line('');
         return $this->choice(
-            'Which issues would you like to fix?',
+            '🎯 Which issues would you like to fix?',
+            array_merge(['all'], $choices),
+            null,
+            null,
+            true
+        ) === ['all'] ? $choices : $this->choice(
+            '🎯 Which issues would you like to fix?',
             $choices,
             null,
             null,
             true
         );
     }
+
+    /**
+     * Format priority with colors and icons
+     */
+    protected function formatPriority(string $priority): string
+    {
+        return match($priority) {
+            'high' => '<fg=red;options=bold>🚨 HIGH</> ',
+            'medium' => '<fg=yellow;options=bold>⚠️ MED </> ',
+            'low' => '<fg=blue;options=bold>🔵 LOW </> ',
+            default => '🔍 UNK  '
+        };
+    }
     
     /**
-     * Fix SEO issues in blade files
+     * Fix SEO issues in blade files with enhanced reporting
      */
     protected function fixFiles(): void
     {
         $files = $this->getBladeFiles();
-        $this->info("Found " . count($files) . " blade files to process");
+        $this->info("📄 Found <fg=yellow>" . count($files) . "</> blade files to process");
         
         $bar = $this->output->createProgressBar(count($files));
+        $bar->setFormat('🔄 Fixing: %current%/%max% [%bar%] %percent:3s%% %message%');
         $bar->start();
         
         $fixed = 0;
         $errors = 0;
+        $totalFixes = 0;
         
         foreach ($files as $file) {
+            $fileName = basename($file);
+            $bar->setMessage("Processing: <fg=cyan>{$fileName}</>");
+            
             try {
                 $result = $this->fixFile($file);
-                if ($result) {
+                if ($result['changed']) {
                     $fixed++;
+                    $totalFixes += $result['fixes_applied'];
                 }
             } catch (\Exception $e) {
-                $this->line("\nError fixing file {$file}: " . $e->getMessage());
+                $this->line("\n<fg=red>❌ Error fixing file {$fileName}: " . $e->getMessage() . "</>");
                 $errors++;
             }
             
@@ -159,7 +233,8 @@ class SeoFixer extends Command
         $bar->finish();
         $this->line("\n");
         
-        $this->info("Fix complete: {$fixed} files modified, {$errors} errors");
+        // Enhanced completion summary
+        $this->showCompletionSummary($fixed, $errors, $totalFixes, count($files));
     }
     
     /**
@@ -193,12 +268,13 @@ class SeoFixer extends Command
     /**
      * Fix a single file
      */
-    protected function fixFile(string $file): bool
+    protected function fixFile(string $file): array
     {
         $relativePath = str_replace(base_path() . '/', '', $file);
         $content = File::get($file);
         $originalContent = $content;
         $changed = false;
+        $fixesApplied = 0;
         
         // Create backup if requested
         if ($this->createBackups) {
@@ -225,6 +301,7 @@ class SeoFixer extends Command
                             $newImgTag = preg_replace('/<img([^>]*)>/', '<img$1 alt="Image">', $imgTag);
                             $content = str_replace($imgTag, $newImgTag, $content);
                             $changed = true;
+                            $fixesApplied++;
                         }
                     }
                 }
@@ -235,6 +312,7 @@ class SeoFixer extends Command
                     if ($newContent !== $content) {
                         $content = $newContent;
                         $changed = true;
+                        $fixesApplied++;
                     }
                 }
             }
@@ -249,7 +327,10 @@ class SeoFixer extends Command
             ]);
         }
         
-        return $changed;
+        return [
+            'changed' => $changed,
+            'fixes_applied' => $fixesApplied
+        ];
     }
     
     /**
@@ -263,7 +344,11 @@ class SeoFixer extends Command
             File::makeDirectory($backupPath, 0755, true);
         }
         
-        $backupFile = $backupPath . '/' . str_replace('/', '_', $file) . '_' . date('Y-m-d_H-i-s') . '.backup';
+        // Fix path separators for Windows compatibility
+        $relativePath = str_replace([base_path() . '/', base_path() . '\\'], '', $file);
+        $backupFileName = str_replace(['/', '\\', ':'], '_', $relativePath) . '_' . date('Y-m-d_H-i-s') . '.backup';
+        $backupFile = $backupPath . DIRECTORY_SEPARATOR . $backupFileName;
+        
         File::copy($file, $backupFile);
     }
     
@@ -290,5 +375,15 @@ class SeoFixer extends Command
             default:
                 return false;
         }
+    }
+
+    /**
+     * Show completion summary
+     */
+    protected function showCompletionSummary(int $fixed, int $errors, int $totalFixes, int $totalFiles): void
+    {
+        $this->line("\n");
+        $this->info("🎉 Fix complete: {$fixed} files modified, {$errors} errors, {$totalFixes} fixes applied");
+        $this->line("<fg=gray>📄 Total files processed: {$totalFiles}</>");
     }
 } 

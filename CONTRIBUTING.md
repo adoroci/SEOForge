@@ -1,14 +1,16 @@
-# Contributing to Laravel SEO Audit
+# Contributing to SEOForge
 
-Thank you for considering contributing to Laravel SEO Audit! We welcome contributions from the community.
+Thank you for considering contributing to SEOForge! We welcome contributions from the community.
+
+⚠️ **Note**: This is an alpha project under active development. Expect breaking changes and bugs.
 
 ## Development Setup
 
 1. Fork the repository on GitHub
 2. Clone your fork locally:
    ```bash
-   git clone https://github.com/YOUR-USERNAME/laravel-seo-audit.git
-   cd laravel-seo-audit
+   git clone https://github.com/YOUR-USERNAME/SEOForge.git
+   cd SEOForge
    ```
 
 3. Install dependencies:
@@ -82,11 +84,21 @@ composer analyze
 
 When adding new SEO elements to check:
 
-1. Add the element to the appropriate compliance level in `config/seo-audit.php`
+1. Add the element to the appropriate compliance level in `config/seo-forge.php`
 2. Implement the detection logic in the `SeoAudit` command
 3. If the element can be auto-fixed, add it to the `SeoFixer` command
 4. Add tests for your new functionality
 5. Update the README.md documentation
+
+## Alpha Development Priorities
+
+Since this is alpha software, we're focusing on:
+
+1. **Core functionality** - Making audit and fix commands reliable
+2. **Cross-platform compatibility** - Windows/Unix path handling
+3. **Accurate detection** - Improving regex patterns
+4. **Better error handling** - More graceful failures
+5. **Documentation** - Clear, honest documentation
 
 ## Reporting Issues
 
@@ -95,6 +107,7 @@ When reporting issues, please include:
 - Laravel version
 - PHP version  
 - Package version
+- Operating system
 - Steps to reproduce the issue
 - Expected vs actual behavior
 - Any relevant code samples
@@ -107,6 +120,17 @@ Feature requests are welcome! Please:
 - Clearly describe the feature and its use case
 - Explain why it would be valuable to other users
 - Consider contributing the implementation yourself
+- Keep in mind this is alpha software with limited scope
+
+## Alpha Limitations
+
+Remember that SEOForge is currently:
+
+- ❌ Not production-ready
+- ❌ Limited to basic structural SEO elements
+- ❌ Cannot generate content (meta descriptions, titles, etc.)
+- ✅ Good for identifying missing SEO elements
+- ✅ Useful for adding basic tags
 
 ## Code of Conduct
 
@@ -116,4 +140,4 @@ Please note that this project is released with a [Code of Conduct](CODE_OF_CONDU
 
 Contributors will be recognized in the README.md file and release notes.
 
-Thank you for helping make Laravel SEO Audit better! 
+Thank you for helping make SEOForge better! 
